@@ -1,0 +1,168 @@
+---
+layout: default
+---
+h1. Installing Dedomenon
+
+*Note:* Dedomenon doesn't run fine with the gem ruby-pg!
+
+h2. Introduction
+
+This guide will help you in installing Dedomenon on your machine. However note that this installation guide is heavily geared towards Debian systems (like Ubuntu etc.)
+
+The process is divided into logical steps.
+
+
+h2. Pre-reqs
+
+* Postgresql: Install using:
+<pre>
+$ sudo apt-get install postgresql
+</pre>
+
+* Rake: Install using:
+<pre>
+$ sudo gem install rake
+</pre>
+
+* Openssl: Install using:
+<pre>
+$ sudo apt-get install libopenssl-ruby
+</pre>
+
+h2. Step1: Install packages
+
+
+*  Make sure you have sudo installed:
+
+<pre>
+apt-get install sudo
+</pre>
+
+If you're on debian, configure it so that you can execute the createdb and createuser commands as postgres. This is done by executing the command
+
+<pre>
+visudo
+</pre>
+
+and adding this line to the file:
+
+<pre>
+YOURLOGIN ALL=(postgres) NOPASSWD:/usr/bin/psql, /usr/bin/createdb, /usr/bin/createuser
+</pre>
+
+* Install packages with this command:
+
+
+<pre>
+$ sudo aptitude install ruby1.8 ruby1.8-dev irb rake rubygems build-essential \
+postgresql-8.2 postgresql-contrib-8.2 libpgsql-ruby1.8 libz-dev libpng-dev libgd2-xpm-dev bit-core
+</pre>
+
+*Note for Debian:* @postgresql-8.2@ package is not available as now. replace @8.2@ with @8.1@ for all the @postgresql@ packages in this command
+
+
+
+h2. Step2: Install Gems
+
+* Now you need to install some gems:
+
+<pre>$ sudo gem install ruby-debug json captcha ruby-gd sources termios</pre>
+
+Install highest available version of each gem.
+
+
+h2. Step Optional: Change postgres user password (OPTIONAL)
+
+You do not need to do this step if you've done it already or do not want to change the password.
+
+* Log on to the freshly install database server by:
+
+<pre>
+$ sudo -u postgres psql postgres
+</pre> 
+
+* Change the password of the default user on prompt with:
+
+<pre>
+postgres# ALTER USER postgres WITH ENCRYPTED PASSWORD 'my_password';
+</pre>
+
+* then quit with
+
+<pre>
+ \q
+</pre>
+
+h2. Step3: Get the application
+
+* Get the application from git:
+
+<pre>
+$ git clone git://dedomenon.org/dedomenon
+</pre>
+
+After getting the source on your local file system, you need to copy the system wide settings file for configuration:
+
+<pre>
+$ cd dedomenon
+$ cp config/settings.yml.sample settings.yml.sample
+</pre>
+
+After copying the file to settings.yml, you may want to have a look at the file contents and make changes in accordance. Though making changes is not needed if you're only installing Dedomenon on a local machine for testing purposes.
+
+h2. Step 4: Run Dedomenon Setup
+
+On root of the application, execute this rake task:
+
+<pre>
+$ rake dedomenon:setup # Creates users, databases, loads translations.
+</pre>
+
+This might ask for your super user passwords as these are executed as super user. The setup has created two users for you:
+
+    * myowndb: is the normal user used for production and development environments
+    * myowndbtester is a super user used for test environemnts 
+
+Setup also created four databases for you:
+
+    * myowndb_dev: to be used for development environment
+    * myowndb_test: to be used for test environment
+    * myowndb_production: to be used for production environment
+    * myowndb_ui_translations: for translations of the interface. 
+
+Setup also ran migrations on production database for you. But if you want to run application in test or development modes, you will have to run migrations yourself like this:
+
+    * RAILS_ENV=development rake db:migrate
+    * RAILS_ENV=test rake db:migrate 
+
+Setup has also generated a file config/database.yml containing correct connection information and passwords you supplied for users during setup. If you want to revert, execute rake dedomenon:purge and it will delete all the users and databases. 
+
+
+h2. Step 5: Run the application 
+
+* From root of the application do this
+
+<pre>
+$ ruby script/server --environment=production
+</pre>
+
+* Now you can browse your application at http://localhost:3000/app
+
+
+h2. Step Optional: Run the tests 
+
+* From root of the application run unit tests
+
+<pre>
+$ rake test:units
+</pre>
+
+
+* And also run functional tests:
+
+
+<pre>
+$ rake test:functionals
+</pre>
+
+* However note that if you run functional tests through rake, the tests under test/functional/entities_controller.rb would always fail. Its a known bug in rails loading of classes which is yet not investigated.

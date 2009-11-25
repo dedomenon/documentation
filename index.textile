@@ -1,0 +1,68 @@
+---
+layout: default
+subsections: [admin, concepts, developing, plugins]
+---
+h1. Dedomenon
+
+Dedomenon is a flexible structured online information storage system.
+
+Dedomenon is open source and released under the terms of "GNU Affero General Public License":http://www.gnu.org/licenses/agpl.html
+
+Join our "mailing list":http://lists.dedomenon.org/mailman/listinfo/discuss/ to stay up to date and discuss with other users and developers.
+
+h2. Overview
+
+* Storage of many types including text, integer, email, web addresses and files.
+* Allows linking pieces of information easily.
+* Extensible in accommodating new data types.
+* Plugin based framework for adding new datatypes
+
+h2. Online Demo
+
+Will be available soon
+
+h2. Upcoming features
+
+* Accessible via very easy and intuitive REST API (work in progress)
+* Import and export in multiple formats (work in progress)
+* Standardization of UI on single JavaScript core
+* Develop import export from excel sheet
+* Develop export to PDF
+* Add reporting, or export table in PDF document
+* Add constraints on detail values. For ex for date, only allow dates in
+  the future, or in a certain date range.
+* Add the ability to tag a record, with tags being user specific.
+* Add a framework for callbacks: before save, after save, before delete,
+  after delete.
+
+
+
+h2. Admin Documentation
+
+* [[Installing Dedomenon]]
+* [[Dedomenon Concepts]] (useful for users and developers alike)
+
+h2. Developer Documentation
+
+h3. Developing Dedomenon
+
+* [[Database structure]]
+* [[How instances are fetched?]]
+* [[Controllers]]
+* [[Models]]
+* [[Configurations]]
+* [[Dedomenon Plugins]]
+* [[DeveloperGuideLines|Developer Guide Lines]]
+
+h3. Developing on Dedomenon
+
+* [[REST API Documentation]]
+
+h3. Extending Dedomenon
+
+* [[Writing new export plugins]]
+* [[Writing new data type]]
+* [[PluginsDirectory | Available plugins]]
+
+
+h3. [[About us]]

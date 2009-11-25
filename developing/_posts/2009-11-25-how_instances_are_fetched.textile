@@ -1,0 +1,124 @@
+---
+layout: default
+---
+{{toc}}
+
+h1. How instances are fetched
+
+[[Dedomenon Concepts]] dealt with the issue of how the instances are fetched. This section describes how the instances are fetched. Implementations for fetching the instances for Dedomenon core and the REST API are different as later one allows editing and creation of multiple values against a details which is not available from the interface.
+
+h2. Dedomenon Core Implementation
+
+This section describes the mechanism that's used for fetching the instances in core Dedomenon.
+
+h3. The big picture
+
+The main query that fetches the instances caters for conditional fetching, ordering the instances and also takes cares of the pagination. The main query looks like this:
+
+<pre><code class="sql">
+SELECT * FROM crosstab_query query_filter ORDER BY ordering LIMIT limit OFFSET offset
+</code></pre>
+
+* _crosstab_query_ can be thought of a table or a view. In fact its a query that joins and unions multiple tables. We'll look at its details later but for now, you can think of it as a table which contains all the details as its columns that a given entity has.
+* _query_filter_ is in fact a WHERE clause which filters out certain instances. We look into it later.
+* _ordering_ is a list of detail names according to which instances are to be ordered.
+* _limit_ is a number as usually in normal SQL statements used to limit the number records to certain extent.
+ 
+h3. What is crosstab_query?
+
+As mentioned in [[Database Structure]], each type of detail value is saved in a different table. Text type values including web urls, emails, simple and large texts are stored in _detail_values_ table. While integer types are stored in _integer_detail_values_. Dates go to date_detail_values and details with propositions go to ddl_proposition_values table. 
+In order to present and assemble a single instance, we need to join all these tables. Suppose we want to get all the instaces of entity with ID 1. The query w
+
+<pre><code class="SQL">
+SELECT DISTINCT ON (i.id, d.name) i.id, LOWER(d.name) AS name, dv.value FROM instances i 
+  JOIN detail_values dv ON (dv.instance_id=i.id) 
+  JOIN details d ON (d.id=dv.detail_id) WHERE i.entity_id=1
+</code></pre>
+
+The above query joins instances, details and detail values. 
+* _instancse_ of given entity are picked
+* _detail_values_ for those picked _instances_ are also picked up
+* _details_ belongingn to each of the _detail_values_ are also picked.
+
+So the result set would something like this:
+
+|_.id |_.name     |_.value           |
+| 1   | firstname | Raphael          |
+| 1   | lastname  | Baudin           |
+| 1   | email     | rb@example.com   |
+| 2   | firstname | Mohsin           |
+| 2   | lastname  | Hijazee          |
+| 2   | email     | mh@example.com   |
+
+Please note the _DISTINCT ON (i.id, d.name)_ clause in the above query. Dedomenon is capable of storing multiple values agains a single detail. This DISTINCT is to prevent selecting all the values against a detail and only picking the first one. This has to do something with the _crosstab_ function that we describe later.
+
+h4. Digging further
+
+The query that you just looked into would be picking the detail values from detail_values table only. This means that you'll only be able to get simple text, email, web url and large text types. But Dedomenon supports even integers, dates and propositions. As described in [[Database Structure]] document, each of these types go into their own tables. So it turns out that we need such a query for each of them.
+
+For fetching integers:
+<pre><code class="SQL">
+SELECT DISTINCT ON (i.id, d.name) i.id, LOWER(d.name) AS name, dv.value::text FROM instances i 
+  JOIN integer_detail_values dv ON (dv.instance_id=i.id) 
+  JOIN details d ON (d.id=dv.detail_id) 
+  WHERE i.entity_id=2 
+  ORDER BY id, name
+</code></pre>
+
+Note that _dv.value_ is used as _dv.value::text_. This is to type case the integer to text.
+
+For the date values:
+<pre><code class="SQL">
+SELECT DISTINCT ON (i.id, d.name) i.id, LOWER(d.name) AS name, dv.value::text FROM instances i 
+  JOIN date_detail_values dv ON (dv.instance_id=i.id) 
+  JOIN details d ON (d.id=dv.detail_id) 
+  WHERE i.entity_id=2 
+  ORDER BY id, name
+</code></pre>
+
+And finally for the propositions:
+<pre><code class="SQL">
+SELECT DISTINCT ON (i.id, d.name) i.id, LOWER(d.name) AS name, pv.value FROM instances i 
+    JOIN ddl_detail_values dv 
+    JOIN detail_value_propositions pv ON (pv.id=dv.detail_value_proposition_id) ON (dv.instance_id=i.id) 
+    JOIN details d ON (d.id=dv.detail_id) 
+    WHERE i.entity_id 
+    ORDER BY id, name
+</code></pre>
+
+Note that an additional table _detail_value_propositions_ is being joined and its value is being treated as the value.
+
+Each of these queries only selects a single type of value. If we want to get instanes containing detail values for all types of datatypes, we need to someshow unify all these result sets into on. SQL UNION does this for us:
+<pre><code class="SQL"> DISTINCT ON (i.id, d.name) i.id, LOWER(d.name) AS name, dv.value::text FROM instances i 
+    JOIN integer_detail_values dv ON (dv.instance_id=i.id) 
+    JOIN details d ON (d.id=dv.detail_id) 
+    WHERE i.entity_id=2 
+UNION
+  SELECT DISTINCT ON (i.id, d.name) i.id, LOWER(d.name) AS name, dv.value::text FROM instances i 
+    JOIN date_detail_values dv ON (dv.instance_id=i.id) 
+    JOIN details d ON (d.id=dv.detail_id) 
+  WHERE i.entity_id=2 
+UNION
+  SELECT DISTINCT ON (i.id, d.name) i.id, LOWER(d.name) AS name, pv.value FROM instances i 
+    JOIN ddl_detail_values dv 
+    JOIN detail_value_propositions pv ON (pv.id=dv.detail_value_proposition_id) ON (dv.instance_id=i.id) 
+    JOIN details d ON (d.id=dv.detail_id) 
+  WHERE i.entity_id ORDER BY id, name
+</pre></code>
+
+When executed, the formation of the result set would be the same but values for details of other types would also be popping up:
+
+|_.id |_.name     |_.value           |
+| 1   | firstname | Raphael          |
+| 1   | lastname  | Baudin           |
+| 1   | email     | rb@example.com   |
+| 1   | age       | 26               |
+| 1   | joined    | 2005-11-21       |
+| 2   | firstname | Mohsin           |
+| 2   | lastname  | Hijazee          |
+| 2   | email     | mh@example.com   |
+| 2   | age       | 24               |
+| 2   | joined    | 2007-11-01       |
+
+
+

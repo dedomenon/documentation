@@ -1,0 +1,35 @@
+---
+layout: default
+---
+h1. Dedomenon Plugins
+
+
+*This is work in progress and subject to change!!*
+
+
+h2. Initialise your plugin
+
+So that Dedomenon know of your plugin, you have to initialize it correctly.
+
+Dedomenon internally uses a configuration object named AppConfig, and all dedomenon plugins should register in the 'plugins' attribute of AppConfig.
+
+Your plugin should push a hash with these keys:
+
+* :name : the name of your plugin, corresponding to the directory in which it is located, ie vendor/plugins/:name
+* :admin_view : the path to an anction of a controller in your plugin, that will be rendered in the settings page of the user. This can simply display a link to display a page rendered by a controller in your plugin.
+
+Example:
+<pre>
+AppConfig.plugins.push( {:name => :dedo_rest_simple , :admin_view => "/rest/simple/admin/index"} )
+</pre>
+ 
+
+h2. Translation files
+
+Dedomenon automatically loads translations located in the config/locales/ subdirectory of your plugin.
+All your translations should be put under the scope dedo:plugin:plugin_name  (where you substitute plugin_name by your real plugin name).
+
+h2. Migrations
+
+Migrations of plugins should be placed under db/migrate, but these are not applied automatically. The admin of the dedomenon software should apply migrations manually.
+When adding tables and adding columns to existing tables, prefix their names with dedo_plugin_#{plugin_name}

@@ -1,0 +1,105 @@
+---
+layout: default
+---
+h1. Models
+
+This document describes the models in Dedomenon. It is strongly recommend that you get fimiliar with the [[Dedomenon_Concepts|Dedomenon concepts]] first.
+You can also look at document:"Model's Diagram of Dedomenon"
+
+Models in Dedomenon can be categorized in following categories:
+
+* Defination Models
+* Data Models
+* User and Account Models
+* Mailings and Notification Models
+
+h2. Defination Models
+
+Defination modesl define the structure of a Dedomenon database. For more information, please look at the [[Dedomenon_Concepts|concepts of Dedomenon]]
+
+Following models define the structure of a database
+
+
+* *@Database@*
+** Represents a Dedomenon database. A database belongs to an account
+* *@Detail@*
+** Represents a dedomenon detail. It belongs to a database and linked to one or more entities.
+* *@DataType@*
+** Represents the data type of a detail.
+* *@DetailStatus@*
+** Represents the status of a detail in Dedomenon.
+* *@DetailValueProposition@*
+** Represents a single possible proposition for a detail of type 'choose in list'
+* *@Entity@*
+** Represents an entity in Dedomenon. An entity belongs on a single database and has many details.
+* *@Entities2Details@*
+** Represents the link between an entity and detail.
+* *@EntityDetail@*
+** Represents the link between an entity and detail. This is redundant, only one class will be kept out of the two.
+* *@Relation@*
+** Represents a relation in between two entities in a Dedomenon database.
+* *@RelationSideType@*
+** Represents the side types of relations.
+
+
+h2. Data Models
+
+Data models represent the data being stored by users in Dedomenon. These data models ensure that the values being saved are valid. Also, they format the stored values for display on user interface.
+
+Following models represent data:
+
+* *@Instance@*
+** Represents an instance. An instance belongs to an entity and has many detail values.
+* *@Link@*
+** Links two instances to gather.
+* *@DetailValue@*
+** Represents a detail value in Dedomenon. Almost all textual type detail values are derivative of this model.
+* *@SimpleDetailValue@*
+** Represents simple text.
+* *@LongTextDetailValue@*
+** Represents larger amounts of text.
+* *@WebUrlDetailValue@*
+** Represents a URL@*
+* *@EmailDetailValue@*
+** Represents an email address.
+* *@DDlDetailValue@*
+** Represents a proposition choice.
+* *@IntegerDetailValue@*
+** Represents an integer value.
+* *@DateDetailValue@*
+** Represents a date type value.
+* *@FileAttachment@*
+** Represents a file attachment.
+
+
+h2. User and Account Models
+
+The User and Account models represent user and accounts and manage authentication and other user rights.
+
+Currently, Dedomenon has following models pertaining to account and user management:
+
+* *@Account@*
+** Represents a Dedomenon account. An account has many users and many databases.
+* *@AccountType@*
+** Represents and account type. (might be deprecated in future or moved to a plugin)
+* *@AccountTypeValue@*
+** Extension mechanism for appending further information with an account type.
+* *@User@*
+** Represents a user in Dedomenon. A user belongs to an account.
+* *@UserType@*
+** Represents the type of a user.
+* *@Preference@*
+** Stores the preferences of a user.
+
+
+h2. Mailings and Notification Models
+
+* *@Mailing@*
+** Used to send mails. Might change or extend in future.
+* *@Notify@*
+** Used for various notifications like registration, forgotten password etc.
+
+
+
+
+

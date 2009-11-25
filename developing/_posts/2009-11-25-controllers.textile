@@ -1,0 +1,86 @@
+---
+layout: default
+--- 
+h1. Controllers
+
+This document describes the controllers and their role in Dedomenon. 
+
+Controllers in Dedomenon are of three types:
+
+* Admin Controllers
+* Ordinary Controllers
+* REST Controllers
+
+h2. Admin Controllers
+
+Admin controller services are only accesible to a user with admin privilidges. These controllers allow the user to define the structure of a Dedomenon database.
+Dedomenon has following admin controllers as of the time of writing:
+
+* *@Admin::DatabasesController@*
+** Allows user to create, rename and destroy Dedomenon databases
+* *@Admin::EntitiesController@*
+** Allows the user to create, rename, destroy entities and lets link the details with entities.
+* *@Admin::DetailsController@*
+** Allows the user to create, rename and destroy details of a Dedomenon database
+* *@Admin::TranslationsController@*
+** Allows the user to enter new translations for Dedomenon translation tokens. This controller will be replaced with a better localization solution in near future.
+* *@Admin::UsersController@*
+** Allows the user to create, rename or destroy users.
+
+h2. Ordinary Controllers
+
+Ordinary controllers are accessible to any users. They allow the users to enter data, browse entered data and structure of a dedomenon database, handle authentication and downloads of file attachments.
+
+* *@ApplicationController@*
+** Includes some controller wide available methods
+* *@AuthenticationController@*
+** Provides sign up, log in and password change services.
+* *@DatabasesController@*
+** Allows to browse the available databases
+* *@EntitiesController@*
+** Allows to browse the entities of a Dedomenon database
+* *@FileAttachmentsController@*
+** Allows to download a file attachment
+* *@SearchController@*
+** Proivdes searching in the entered data.
+* *@SettingsController@*
+** Handles the user settings and preferences.
+
+h2. REST Controllers
+
+REST controllers are dedicated controllers that expose the dedomenon resources via very simple and intuitive REST API in JSON. Dedomenon REST API is yet a work in progress. If you want to learn more about the Dedomenon REST API [[REST API Documentation|here]].
+
+Dedomenon has following REST controllers:
+
+* *@Rest::AccountTypesController@*
+** Allows to get available account types
+* *@Rest::AccountsController@*
+** Allows creation, modification and destruction of account types.
+* *@Rest::DataTypesController@*
+** Allows to get available data types.
+* *@Rest::DatabasesController@*
+** Allows to create, modify and destroy Dedomenon databases.
+* *@Rest::DetailStatusesController@*
+** Allows to get detail statuses.
+* *@Rest::DetailValuePropositionsController@*
+** Allows you to get, create and modify propositions of a detail of type 'choose in list'
+* *@Rest::DetailsController@*
+** Allows you to create, modify and destroy details.
+* *@Rest::EntitiesController@*
+** Allows you to create, modify and destory entities. Also provides services to link/unlink details to entities.
+* *@Rest::InstancesController@*
+** Allows you to get, modify and create instances for your entities.
+* *@Rest::LinksController@*
+** Allows you to link instances to gather.
+* *@Rest::RelationSideTypesController@*
+** Provides the available type of relations sides.
+* *@Rest::RelationsController@*
+** Allows to relate/un-relate two entities.
+* *@Rest::UserTypesController@*
+** Allows to get possible types of users.
+* *@Rest::UsersController@*
+** Allows creation, modification and destruction of users.
+* *@Rest::ValuesController@*
+** Allows to treat detail values in isolation by providing services to create, modify and destroy them.
+
+Note that all the communication is done in JSON format. For more information, have a look at document:"Controller's Diagram of Dedomenon"

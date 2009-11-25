@@ -1,0 +1,128 @@
+---
+layout: index
+sections: [developing]
+---
+h1. Database structure
+
+This document describes the database structure of Dedomenon. 
+It is strongly recommenced that you get yourself familiar with the [[Dedomenon_Concepts|concepts involved]] before reading this document.
+
+h2. Introduction
+
+Dedomenon is built on PostgreSQL and needs the @myfunc@ module installed. It can be found in the @contrib@ directory of the PostgreSQL source package.
+
+All the databases in Dedomenon are stored in a single physical PostgreSQL database.This is not only interesting to know how it works under the hood but also worth looking if you want to contribute in development or want to customize it for your needs.
+
+To illustrate the ideas explained, we’ll use a database where we store several artists with their respective hits. In a traditional RDBMS, our system would be using 2 tables named respectively Artists and Songs, and each would have the following fields:
+
+
++Table 1+: _Artists_
+
+|_. Fields |_. Data type |_. Constraint |
+|   id     | @int@       |  primary key |
+|   name   | @varchar@   |              |
+
++Table 2+: _Songs_
+
+|_. Fields|_. Data type|_. Constraint|
+|id|@int@|primary key|
+|title|@varchar@||
+
++Table 3+: _artists2songs_
+
+|_. Fields|_. Data type|_. Constraint|
+|id|@int@|primary key|
+|artist_id|@int@|references artist(id)|
+|song_id|@int@|references song(id)|
+
+As mentioned earlier, all definition of Dedomenon databases, tables, table fields, relations, as well as records, field values, are stored in one PostgreSQL database. We can make the distinction between two “zones” in the database schema:
+
+*  *Definition Zone:* 
+** Defining the structure of the Dedomenon database, the tables, the table fields and their respective data types , the relation between tables (one to many, one to one, many to many), the data types available, the choices available for a multiple-choice list. This zone is managed by the administrator.
+*  *Instantiation Zone:*
+**  Which stores all actual values: records, fields values, relations between records. This zone is where data entered by end users is stored. The primary key for all PostgreSQL tables is named @id@. It will not be mentioned every time a PostgreSQL table is described.
+
+h2. Definitions Zone
+
+In definition zone, structure of a Dedomenon database is defined. Or in other words, its meta data about a Dedomenon database.
+
+
+h3. Databases
+
++Table Name:+ @databases@
+
+One Dedomenon database is a record in the PostgreSQL table named @databases@. It is linked to an account, and has just a name.
+
+h3. Entities
+
++Table Name:+ @entities@
+
+Dedomenon entities are similar to tables in the RDBMS world. Entities are part of a database, and have a name. They are stored in the @entities@ table. It is linked to a database, has a name and a flag to toggle the availability of the public form (embeddable in pages out of the Dedomenon application). In our example, we’ll have an entity with id 1 and name _artists_ and an entity with id 2 and name _songs_. We don’t need to create a third entity to store re links between entities.
+
+h3. Details
+
++Table Name:+ @details@
+A detail is the definition of a field of an entity. It is similar to a column of a table in the RDBMS world. One Dedomenon detail is defined by an entry in the PostgreSQL table @details@. Each detail is linked to a database; has a name; a status and a data type.
+
+As mentioned in the [[Dedomenon_Concepts|Dedomenon concepts]], one detail can be linked to several entities. This is achieved with the table @entities2details@. @entities2details@ table defines which detail is linked with what entity with what status, is visible in views or not, how many values at max it can take and what is its display order when showed on entry forms.
+
+Dedomenon is designed to accept multiple values for one field of an entity, although this is not yet used on the interface, but its available through REST API. For example, we’ll have a detail with id 1 and name _name_ and a detail with id 2 and name _title_. Details for which the value has to be picked in a list of propositions have their propositions stored in the PostgreSQL table @detail_value_propositions@. This Postgresql table has 2 columns:
+
+*  @value@ is the value proposition
+*  @detail_id is@ the detail for which this entry is a proposition
+
+h3. Data Types
+
+Data types define the type of data a detail will store. Each data type has a name, which is a translation token, and a class name, which is a Ruby class that will be responsible for handling the data of this type. This Ruby class is responsible to display the data and to display the form field to enter the data. Currently available data types are as under:
+
+* *Short text* in form, display in text input; in lists, displayed as text 
+* *Date* currently same display at short text, though the form field should have a date picker 
+* *Integer number* currently same display at short text, though the form field could have       a +/- to increment or decrement the value
+* *Choose in proposition list* in forms, displayed a drop down list; in lists displayed as text. Value propositions for a detail are stored in the PostgreSQL table @detail_value_propositions@.
+*  *Long text* in forms, displayed as a text area.
+*  *Email* in forms displayed as text input; in lists displayed as a mailto: link.
+*  *Web URL* in lists, displayed as HTML link.
+*  *File Attachments* in forms, displayed as file upload field, in lists, displayed as HTML link to download the file.
+
+In our example of artists and songs, both details are of type short text.
+
+h3. Entities2details
+
+When a detail is defined, it can be reused with multiple entities. When a detail defines a field of an entity, an entry linking both it created in the table @entities2details@. This table also has a flags to say if the field has to be displayed in list views. In our example, the detail _Name_ will be attached to the entity _Artists_, and the detail _Title_ will be attached to the entity _Songs_. 
+
+This will result with these entries in the PostgreSQL table @entities2details@:
+
+|_. @entity_id@  |_. @detail_id@ |_. Explanation                           |
+|  1             |   1           |   linking detail name to entity artists |
+|  2             |   2           |   linking detail title to entity songs  |
+
+
+h3. Relations
+
+The fact that the instance of one entity can be linked to an instance of the same or another entity is defined in the PostgreSQL table @relations@. An entry in the PostgreSQL table @relations@ links 2 entries in the PostgreSQL table @entities@, one being the parent of the relation, the other the child. Each relation end, i.e. parent and child, is characterized as being of type One or a Many. The relation has a name in both direction: from parent to child and from child to parent. This enables to have significant names such as “Sings on” in the direction _Artist_ to _Song_, and “is sung by” in the direction _Song_ to _Artist_. 
+
+In our example, we have a many to many relation between artists and songs, so that a song can be sung by multiple artists, and an artist can be singing multiple songs. We’ll end up with tis entry in the PostgreSQL table:
+
+|_. @parent_id@ |_. @child_id@ |_. @parent_side_type@ |_. @child_side_type |_. @from_parent_to_child_name@ |_. @from_child_to_parent_name@ |
+|      1        |      2       |       many           |       many         |       Sings on                |       Sung by                 |
+
+The type of the relation side (one or many) is actually stored in a PostgreSQL table @relation_side_types@.
+
+h2. Instantiation zone
+
+This zone in the database stores all the actual data stored in the schema defined in the definition zone. Let’s say we enter the artist “George Michael” with his song “Jesus to a child“.
+
+
+h3.  Instances
+
+Instances are similar to rows or records in the RDBMS world. They got their name from the view that they are instantiations of entities. Each instance contains data defined by on entity. An instance cannot be linked to two entities.
+
+h3. Detail values
+
+All values entered when we create an instance are stored in dedicated tables for each PostgreSQL data type stored: text, integer, date. In our example, when we enter an artist with the name ”George Michael“, a record is created in the PostgreSQL table @instances@ with id 1, linked to the entity ”Artists“ (record in PostgreSQL table @entities@ with id 1). The detail ”name“ is stored in the table PostgreSQL @detail_values@ in a record linked to the detail ”name“, the instance with id 1 and its value column contains the text ”George Michael“.
+
+
+The PostgreSQL table @detail_values@ is used to store all values for text details, such as emails, short and long texts, web urls. It also is used for storing parameters to identify file attachments. To know which type of data was stored in the detail value record, a type column contains a reference to the data type. This could be found in the detail linked from the detail value, but was needed for performance. The PostgreSQL tables @date_detail_values@ and @integer_detail_values@ work the same way for date and integer values respectively. The same can be said for detail of type ”choice in list”, but rather than storing the value, we store the id of the “detail value proposition”. This id is save in the column @detail_value_proposition_id@ in the PostgreSQL table @ddl_detail_values@.
+
+
+

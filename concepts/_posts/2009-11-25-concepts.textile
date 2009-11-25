@@ -1,0 +1,84 @@
+---
+layout: default
+---
+
+h1. Dedomenon Concepts
+
+Dedomenon is an online structured information storage system. The world of concepts in Dedomenon can be divided into two logical zones:
+
+*  Definition Zone
+*  Instantiation Zone
+
+Shortly, in definition zone, you define the structure of your data and in instantiation zone, you place your data. 
+
+h2. Definition Zone
+
+Definition zone describes the structure of your storage space. This is where you tell what you want to store in what organization. Here are the components that describe structure and organization of your data in Dedomenon:
+
+*  Database
+
+  *  Detail
+
+  *  Entity
+
+      *  Relation
+
+
+
+h3. Databases
+
+A database is the top most container of your data. It does not contain any data itself, but it contains many entities. Also, it has many details. A detail can be linked to many entities. For example, in a database _Contacts_ there might be two entities 'Friends' and 'Family' and two details 'Name' and 'Phone'. The detail 'Name' can be associated with both entities 'Friends' and 'Family'. This lets you reuse details in defining what your entities will hold.
+
+h3. Entities
+
+An Entity holds information about a particular object of your domain. For ease, you can perfectly think of an entity analogous to a table as in a typical database system. Each entity has many details. Again, you can think of details as fields of a table.
+
+h3. Details
+
+A database has many details. These details are then linked to entities to define the structure of the data you will store in Dedomenon. As mentioned in the section on entities, you can think of a detail analogous to a field of a table. A detail has a name and a data type which might be any of the following:
+
+*  Short text
+*  Long text
+*  Date
+*  Integer number
+*  Email
+*  Web URL
+*  Choose in proposition list
+*  File attachment
+
+In _Choose in proposition list_ data type, you will have to choose a value within a list of proposition that you provide at the creation of detail of this data type. Also note that a detail may be linked to many entities.
+
+h3. Relations
+
+Any two entities in your database might have some sort of relationship among them. For example, if you have two entities in your database named _Artists_ and _Songs_ then its obvious that a song belongs to an artist (or even more if sung by many). Similarly, an artist might have many songs. This type of information is captured as _Relation_ in Dedomenon. 
+
+A _Relation_ has two participant entities, type of relation at each end (one-to-one, one-to-many). Moreover, it has a name from each side of relation. 
+
+In the example of _Artists_ and _Songs_, An artist can have many songs (one-to-many) but a song can only belong to a single artist (one-to-one). Note that we assume that a song is sung by a single singer. Then a _Relation_ has name from each side. So in this example, fron _Artists_ to _Songs_ the relation side will have a name _Sings on_ (or whatever you think describes the relationship better) and from _Songs_ to _Artists_ it will have _Sung by_ as name.
+
+h2. Instantiation Zone
+
+This is where your actual data is stored.
+
+*  Instance
+
+  * Detail Value
+  * Links
+
+h3. Instances
+
+Instances are similar to rows or records in tables. They got their name from the view that they are instantiations of entities. Each instance contains data defined by one entity. An instance cannot be linked to two entities. As entities have details, instances have detail values.
+
+h3. Detail Values
+
+When talking about details in their section, we described them as analogous to fields of a table. Similarly, when talking about instances, detail values are the values for those details. As an example, lets suppose we have an entity _Songs_ with details _Tittle_ and _Length_. This describes the structure of what a _Song_. When you create instances for this entity, the values you enter against the details of the entity are known as detail values.
+
+To elaborate further, if we have an instance for _Songs_ entity like this: 
+
+| *Title* | *Length* |
+| "I can't stop loving you"  |  2:41 |
+
+
+Then "I can't stop loving you" is detail value for detail _Title_ and 2:41 is detail value for detail _Length_ of entity _Songs_.
+
+
