@@ -43,11 +43,10 @@ h1, h2, h3, h4 {
 	color: #555;
 	margin: 10px 20px 7px 20px;	 
 }
-h1 { font-size: 3.7em; font-weight: normal; letter-spacing: -2px; }
-h2 { font-size: 2.8em; font-weight: normal; }
-h3 { font-size: 2.2em; font-weight: normal; letter-spacing: -0.5px; padding-top: 15px; }
-h4 { font-size: 1.4em; }
-
+h1 { font-size: 370%; font-weight: normal; letter-spacing: -2px; }
+h2 { font-size: 280%; font-weight: normal; }
+h3 { font-size: 220%; font-weight: normal; letter-spacing: -0.5px; padding-top: 15px; }
+h4 { font-size: 140%; }
 /* Lists */
 ul, ol {
 	margin: 10px 20px;
@@ -692,4 +691,10 @@ p.thumbs {
 }
 
 
+#hd {
+padding-top: 1em;
+}
 
+.bcsep {
+padding: 0.5em;
+}
