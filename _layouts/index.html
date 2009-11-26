@@ -4,7 +4,6 @@ layout: default
 <!-- posts in this category -->
 {% unless site.categories[page.categories.last] == nil or site.categories[page.categories.last] == empty  %}
 <h2>Documents in this section</h2>
-{{site.base_dir}}
 {% for p in site.categories[page.categories.last] %}
 <div class="section list">
   <p class="line">
