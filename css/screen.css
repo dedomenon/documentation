@@ -698,3 +698,12 @@ padding-top: 1em;
 .bcsep {
 padding: 0.5em;
 }
+.page-warning
+{
+border:3px solid #E3942C;
+font-family:georgia,serif;
+padding: 2em;
+color: red;
+font-size: 250%;
+background: #ffdddd;
+}
