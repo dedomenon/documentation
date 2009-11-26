@@ -1,4 +1,13 @@
 #!/bin/bash
+
+if [[ $# -ne 2 ]] ; then
+  cat <<-END
+	Needs to argument: directory of parent section, and new section name, eg
+	$0 ./projects my_new_project
+	END
+  exit 1
+fi
+
 base_dir=$1
 section=$2
 
