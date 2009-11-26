@@ -33,7 +33,7 @@
 </div>
 	</div>
 	<div class="yui-b sidemenu"><!-- NAVIGATION HERE -->
-{%unless page.subsections == nil %}
+{%unless page.subsections == nil or page.subsections == empty %}
 	<h3>Subsections</h3>
 	<ul>
 	{% for section in page.subsections %}
