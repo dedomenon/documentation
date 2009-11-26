@@ -15,7 +15,8 @@
 <div class="breadcrumbs">
 
 {% assign b = " " %}
-<span class="breadcrumb-item"><a href="/">Home</a></span>
+{% capture b %}{{site.base_dir}}{% endcapture %}
+<span class="breadcrumb-item"><a href="{{site.base_dir}}/">Home</a></span>
 {% for p in page.categories %}
 <span class="bcsep">&raquo;</span><span class="breadcrumb-item"><a href="{{b}}/{{p}}">{{p}}</a></span>
 {% capture b %}{{b}}/{{p}}{% endcapture %}
@@ -36,7 +37,7 @@
 	<h3>Subsections</h3>
 	<ul>
 	{% for section in page.subsections %}
-	  <li><a href="{{ section }}">{{section}}</a></li>
+	  <li><a href="{{site.base_dir}}{{ section }}">{{section}}</a></li>
 	{% endfor %}
 	</ul>
 {%endunless%}
