@@ -6,7 +6,7 @@ function OnLoad() {
   // Add in a WebSearch
   var webSearch = new google.search.WebSearch();
   // Restrict our search to pages from this site
-  webSearch.setSiteRestriction('tagaholic.me');
+  webSearch.setSiteRestriction('http://dedomenon.github.com/documentation');
   
   var options = new google.search.SearcherOptions();
   options.setExpandMode(google.search.SearchControl.EXPAND_MODE_OPEN);
