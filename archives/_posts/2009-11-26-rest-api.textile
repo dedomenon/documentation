@@ -1,0 +1,346 @@
+---
+layout: default
+---
+p(page-warning). Warning: this is not applicable to the current Dedomenon version!
+
+
+h1. REST API Documentation
+
+Dedomenon is an online data storage solution which is also accessible via REST API.
+
+
+
+
+
+
+
+
+
+h2. Conventions of the REST API
+
+
+* All @POST@ operations return URLs of the newly created resource.
+* All @PUT@ operations return update resource in JSON format.
+* All @PUT@ calls expect @lock_version@ in the resource
+* ALL @DELETE@ calls require @lock_version@ parameter
+* ALL @GETT@ calls return a [[ResourceParcel|resource parcel]]
+* All communication is accepted and responded in JSON format.
+
+* *Note*: @GETT@ in this documentation refers to a call which retrieves a collection of items instead of any specific item for example: @GET /users@
+
+
+
+
+
+
+
+
+
+h2. Status Codes
+
+Following status codes are used all over
+
+
+|_. HTTP Code |_. Meaning                                                                        |_. Returned On                 |
+| @201@       | Resource created                                                                 | @POST@                        |
+| @200@       | Operation Successfull                                                            | @GET@/@PUT@/@DELETE@          |
+| @400@       | Bad Request. Mostly returned when some required piece of information is missing  | ALL                           |
+| @403@       | Forbidden. Operation not allowed                                                 | @GET@/@PUT@/@DELETE@/@POST@   |
+| @404@       | Resource Not Found. Any of the mentioned resource does not exists                | ALL                           |
+| @409@       | Version Conflict. Item is updated from somewhere else                            | @PUT@/@DELETE@                |
+| @500@       | Internal Server Error. Or if system fails to delete an object.                   | ALL                           |
+
+h2. Available Calls
+
+
+Here are the available calls.
+
+
+
+h2. Accounts 
+
+Account resources can be interacted in following ways:
+
+|_. Call ID |_. Method  |_. Path             |_. Requires                   |_.   Returns                                                   |
+| @ACC.01@  | @POST@    | @/accounts@        | [[AccountResource|Account]]  | URL of newly created account                                  |
+| @ACC.02@  | @PUT@     | @/accounts/:id@    | [[AccountResource|Account]]  | Updated [[AccountResource|Account]]                           |
+| @ACC.03@  | @GET@     | @/accounts@        | N/A                          | [[ResourceParcel|Parcel]] of [[AccountResource|Account]]      |
+| @ACC.04@  | @GET@     | @/accounts/:id@    | N/A                          | [[AccountResource|Account]]                                   |
+| @ACC.05@  | @DELETE@  | @/accounts/:id@    | @lock_version@               | Status code                                                   |
+
+
+*Notes*
+
+h2. Account Types
+
+You can access account types in following ways.
+
+|_. Call ID |_. Method  |_. Path                 |_. Requires                           |_.   Returns                                                      |
+| @ACT.01@  | @POST@    | @/account_types@       | [[AccountTypeResource|AccountType]]  | URL of newly created account type                                |
+| @ACT.02@  | @PUT@     | @/account_types/:id@   | [[AccountTypeResource|AccountType]]  | Updated [[AccountTypeResource|AccountType]]                      |
+| @ACT.03@  | @GET@     | @/account_types@       | N/A                                  | [[ResourceParcel|Parcel]] of [[AccountTypeResource|AccountType]] |
+| @ACT.04@  | @GET@     | @/account_types/:id@   | N/A                                  | [[AccountTypeResource|AccountType]]                              |
+| @ACT.05@  | @DELETE@  | @/account_types/:id@   | @lock_version@                       | Status code                                                      |
+
+
+*Notes*
+* @ACT.01@, @ACT.02@ and @ACT.05@ might be deprecated.
+
+
+
+
+
+h2. Users
+
+
+User resources can be interacted in following ways:
+
+|_. Call ID |_. Method  |_. Path                            |_. Requires              |_. Returns                                             |
+| @USR.01@  | @POST@    | @/users@                          | [[UserResource|User]]   | URL of newly created user                             |
+| @USR.02@  | @PUT@     | @/users/:id@                      | [[UserResource|User]]   | Updated [[UserResource|User]]                         |
+| @USR.03@  | @GET@     | @/users/:id@                      | N/A                     | [[UserResource|User]]                                 |
+| @USR.04@  | @GET@     | @/users@                          | N/A                     | [[ResourceParcel|Parcel]] of [[UserResource|User]]    |
+| @USR.05@  | @DELETE@  | @users/:id@                       | @lock_version@          | Status code                                           |
+| @USR.06@  | @POST@    | @/accounts/:account_id/users@     | [[UserResource|User]]   | URL of newly created user                             |
+| @USR.07@  | @PUT@     | @/accounts/:account_id/users/:id@ | [[UserResource|User]]   |  Updated [[UserResource|User]]                        |
+| @USR.08@  | @GET@     | @/accounts/:account_id/users/:id@ | N/A                     | [[UserResource|User]]                                 |
+| @USR.09@  | @GET@     | @/accounts/:account_id/users@     | N/A                     | [[ResourceParcel|Parcel]] of [[UserResource|User]]    |
+| @USR.10@  | @DELETE@  | @/accounts/:account_id/users/:id@ | @lock_version@          | Status code                                           |
+
+
+*Notes*
+
+
+* @USR.01@ creates the user in the account of the user making the request.
+* @USR.04@ returns the users from the account of the user making the request.
+
+
+h2. User Types
+
+You can interact with the [[UserTypeResource|user type resource]] in following ways:
+
+|_. Call ID |_. Method |_. Path                           |_. Requires                |_. Returns                                                          |
+| @UST.01@  | @GET@    | @/user_types@                    | N/A                       | [[ResourceParcel|Parcel]] of [[UserTypeResource|UserType]]         |
+| @UST.02@  | @GET@    | @/user_types/:id@                | N/A                       | [[UserTypeResource|UserType]]                                      |
+
+
+*Notes*
+
+
+
+h2. Databases
+
+Dedomenon databases can be accessed in following ways via REST API:
+
+
+|_. Call ID |_. Method |_. Path                                 |_. Requires                    |_. Returns                                                    |
+| @DTB.01@  | @POST@   | @/databases@                           | [[DatabaseResource|Database]] | URL of newly created database                                |
+| @DTB.02@  | @PUT@    | @/databases/:id@                       | [[DatabaseResource|Database]] | Updated [[DatabaseResource|Database]]                        |
+| @DTB.03@  | @GET@    | @/databases/:id@                       | N/A                           | [[DatabaseResource|Database]]                                |
+| @DTB.04@  | @GET@    | @/databases@                           | N/A                           | [[ResourceParcel|Parcel]] of [[DatabaseResource|Database]]   |
+| @DTB.05@  | @DELETE@ | @databases/:id@                        | @lock_version@                | Status code                                                  |
+| @DTB.06@  | @POST@   | @/accounts/:account_id/databases@      | [[DatabaseResource|Database]] | URL of newly created database                                |
+| @DTB.07@  | @PUT@    | @/accounts/:account_id/databases/:id@  | [[DatabaseResource|Database]] | Updated [[DatabaseResource|Database]]                        |
+| @DTB.08@  | @GET@    | @/accounts/:account_id/databases/:id@  | N/A                           | [[DatabaseResource|Database]]                                |
+| @DTB.09@  | @GET@    | @/accounts/:account_id/databases@      | N/A                           | [[ResourceParcel|Parcel]] of [[DatabaseResource|Database]]   |
+| @DTB.10@  | @DELETE@ | @/accounts/:account_id/databases/:id@  | @lock_version@                | Status code                                                  |
+
+*Notes*
+* @DTB.01@ creates the database in the account of the user making the request.
+* @DTB.04@ returns the databases from the account of the user making the request.
+
+
+
+h2. Entities
+
+You can access the entities resources in following ways:
+
+|_. Call ID |_. Method |_. Path                                 |_. Requires                |_. Returns                                              |
+| @ENT.01@  | @POST@   | @/entities@                            | [[EntityResource|Entity]] | URL of newly created entity                            |
+| @ENT.02@  | @PUT@    | @/entities/:id@                        | [[EntityResource|Entity]] |  Updated [[EntityResource|Entity]]                     |
+| @ENT.03@  | @GET@    | @/entities/:id@                        | N/A                       | [[EntityResource|Entity]]                              |
+| @ENT.04@  | @DELETE@ | @entities/:id@                         | @lock_version@            | Status code                                            |
+| @ENT.05@  | @POST@   | @/databases/:database_id/entities@     | [[EntityResource|Entity]] | URL of newly created entity                            |
+| @ENT.06@  | @PUT@    | @/databases/:database_id/entities/:id@ | [[EntityResource|Entity]] |  Updated [[EntityResource|Entity]]                     |
+| @ENT.07@  | @GET@    | @/databases/:database_id/entities/:id@ | N/A                       | [[EntityResource|Entity]]                              |
+| @ENT.08@  | @GET@    | @/databases/:database_id/entities@     | N/A                       | [[ResourceParcel|Parcel]] of [[EntityResource|Entity]] |
+| @ENT.09@  | @DELETE@ | @/databases/:database_id/entities/:id@ | @lock_version@            | Status code                                            |
+
+*Notes*
+* @ENT.01@ should mention the database id in the resource
+
+
+
+h2. Details
+
+Details can be accessed in following ways:
+
+|_. Call ID |_. Method |_. Path                                |_. Requires                |_. Returns                                                  |
+| @DTL.01@  | @POST@   |@/details@                             | [[DetailResource|Detail]] | URL of newly created detail                                |
+| @DTL.02@  | @PUT@    | @/details/:id@                        | [[DetailResource|Detail]] | Updated [[DetailResource|Detail]]                          |
+| @DTL.03@  | @GET@    | @/details/:id@                        | N/A                       | [[DetailResource|Detail]]                                  |
+| @DTL.04@  | @DELETE@ | @details/:id@                         | @lock_version@            | Status code                                                |
+| @DTL.05@  | @POST@   | @/databases/:database_id/details@     | [[DetailResource|Detail]] | URL of newly created detail                                |
+| @DTL.06@  | @PUT@    | @/databases/:database_id/details/:id@ | [[DetailResource|Detail]] | Updated [[DetailResource|Detail]]                          |
+| @DTL.07@  | @GET@    | @/databases/:database_id/details/:id@ | N/A                       | [[DetailResource|Detail]]                                  |
+| @DTL.08@  | @GET@    | @/databases/:database_id/details@     | N/A                       | [[ResourceParcel|Parcel]] of [[DetailResource|Detail]]     |
+| @DTL.09@  | @DELETE@ | @/databases/:database_id/details/:id@ | @lock_version@            | Status code                                                |
+| @DTL.10@  | @POST@   | @/entities/:entity_id/details@        | [[DetailResource|Detail]] | Status code                                                |
+| @DTL.11@  | @PUT@    | @/entities/:entity_id/details/:id@    | [[DetailResource|Detail]] | Updated [[DetailResource|Detail]]                          |
+| @DTL.12@  | @GET@    | @/entities/:entity_id/details/:id@    | N/A                       | [[DetailResource|Detail]]                                  |
+| @DTL.13@  | @GET@    | @/entities/:entity_id/details@        | N/A                       | [[ResourceParcel|Parcel]] of [[DetailResource|Detail]] |
+| @DTL.14@  | @DELETE@ | @/entities/:entity_id/details/:id@    | @N/A@                     | Status code                                                |
+| @DTL.15@  | @POST@   | @/instances/:instance_id/details@     | [[DetailResource|Detail]] | Status code                                                |
+| @DTL.16@  | @PUT@    | @/instances/:instance_id/details/:id@ | [[DetailResource|Detail]] | Updated [[DetailResource|Detail]]                          |
+| @DTL.17@  | @GET@    | @/instances/:instance_id/details/:id@ | N/A                       | [[DetailResource|Detail]]                                  |
+| @DTL.18@  | @GET@    | @/instances/:instance_id/details@     | N/A                       | [[ResourceParcel|Parcel]] of [[DetailResource|Detail]]     |
+| @DTL.19@  | @DELETE@ | @/instances/:instance_id/details/:id@ | @N/A@                     | Status code                                                |
+
+
+
+*Notes*
+* @DTL.01@ required database_id to be mentioned in [[DetailResource|detail resource]]
+* @DTL.04@ deletes the [[DetailResource|detail]] from the system.
+* @DTL.05@ creates a detail in the [[DatabaseResource|database]] mentioned as part of URL.
+* @DTL.08@ returns [[ResourceParcel|resource parcel] containing all the [[DetailResource|details] of [[DatabaseResource|database]]
+* @DTL.09@ will delete the detail from the database.
+* @DTL.10@ links a detail with an entity.
+* @DTL.13@ returns [[ResourceParcel|resource parcel]] containing all the [[DetailResource|details]] of an [[EntityResource|entity]]
+* @DTL.14@ unlinks a [[DetailResource|detail]] from an [[EntityResource|entity]]
+* @DTL.15@ to @DTL.19@ are same as @DTL.10@ to @DTL.14@ however they are effective to the entity of the instance being mentioned.
+
+h2. DetailStatuses
+
+You can interact with the detail status resource in following ways:
+
+|_. Call ID |_. Method |_. Path                                |_. Requires                |_. Returns                                                          |
+| @DTS.01@  | @GET@    | @/detail_statuses@                    | N/A                       | [[ResourceParcel|Parcel]] of [[DetailStatusResource|DetailStatus]] |
+| @DTS.02@  | @GET@    | @/detail_statuses/:id@                | N/A                       | [[DetailStatusResource|DetailStatus]]                              |
+
+*Notes*
+
+h2. Detail Value Propositions
+
+Detail value proposition  resources can be interacted in following ways:
+
+|_. Call ID |_. Method  |_. Path                                    |_. Requires                                                 |_.   Returns                                                                            |
+| @DVP.01@  | @POST@    | @/propositions@                           | [[DetailValuePropositionResource|DetailValueProposition]]  | URL of newly created proposition                                                       |
+| @DVP.02@  | @PUT@     | @/propositions/:id@                       | [[DetailValuePropositionResource|DetailValueProposition]]  | Updated [[DetailValuePropositionResource|DetailValueProposition]]                      |
+| @DVP.03@  | @GET@     | @/propositions/:id@                       | N/A                                                        | [[DetailValuePropositionResource|DetailValueProposition]]                              |
+| @DVP.04@  | @DELETE@  | @/propositions/:id@                       | @lock_version@                                             | Status code                                                                            |
+| @DVP.05@  | @POST@    | @/details/:detail_id/propositions@        | [[DetailValuePropositionResource|DetailValueProposition]]  | URL of newly created proposition                                                       |
+| @DVP.06@  | @PUT@     | @/details/:detail_id/propositions/:id@    | [[DetailValuePropositionResource|DetailValueProposition]]  | Updated [[DetailValuePropositionResource|DetailValueProposition]]                      |
+| @DVP.07@  | @GET@     | @/details/:detail_id/propositions@        | N/A                                                        | [[ResourceParcel|Parcel]] of [[DetailValuePropositionResource|DetailValueProposition]] |
+| @DVP.08@  | @GET@     | @/details/:detail_id/propositions/:id@    | N/A                                                        | [[DetailValuePropositionResource|DetailValueProposition]]                              |
+| @DVP.09@  | @DELETE@  | @/details/:detail_id/propositions/:id@    | @lock_version@                                             | Status code                                                                            |
+
+
+
+*Notes*
+* @DVP.01@ must mention the URL of the [[DetailResource|detail]] as @detail_url@
+* @DVP.05@ considers the detail id from the path if the @detail_url@ field in the [[DetailResource|detail resource]] is missing
+* @DVP.07@ returns all the [[DetailValuePropositionResource|propositions]] of a [[DetailResource|detail]] mentioned in the path.
+
+
+h2. DataTypes
+
+You can interact with data type resource in Dedomenon with following REST calls:
+
+|_. Call ID |_. Method |_. Path                                |_. Requires                |_. Returns                                                  |
+| @DTP.01@  | @GET@    | @/data_types@                         | N/A                       | [[ResourceParcel|Parcel]] of [[DataTypeResource|DataType]] |
+| @DTP.02@  | @GET@    | @/data_types/:id@                     | N/A                       | [[DataTypeResource|DataType]]                              |
+
+
+*Notes*
+
+
+
+h2. Relations
+
+You can access Relation resource in following ways through REST API:
+
+|_. Call ID |_. Method |_. Path                               |_. Requires                     |_. Returns                                                  |
+| @REL.01@  | @POST@   | @/relations@                         | [[RelationResource|Relation]]  | URL of newly created relation                              |
+| @REL.02@  | @PUT@    | @/relations/:id@                     | [[RelationResource|Relation]]  | Updated [[RelationResource|Relation]]                      |
+| @REL.03@  | @GET@    | @/relations/:id@                     | N/A                            | [[RelationResource|Relation]]                              |
+| @REL.04@  | @DELETE@ | @relations/:id@                      | @lock_version@                 | Status code                                                |
+| @REL.05@  | @POST@   | @/entities/:entity_id/relations@     | [[RelationResource|Relation]]  | URL of newly created relation                              |
+| @REL.06@  | @PUT@    | @/entities/:entity_id/relations/:id@ | [[RelationResource|Relation]]  | Updated [[RelationResource|Relation]]                      |
+| @REL.07@  | @GET@    | @/entities/:entity_id/relations/:id@ | N/A                            | [[RelationResource|Relation]]                              |
+| @REL.08@  | @GET@    | @/entities/:entity_id/relations@     | N/A                            | [[ResourceParcel|Parcel]] of [[RelationResource|Relation]] |
+| @REL.09@  | @DELETE@ | @/entities/:entity_id/relations/:id@ | @lock_version@                 | Status code                                                |
+
+*Notes*
+* @REL.01@ The resource must mention both the @parent_url@ and @child_url@ in the [[RelationResource|relation resource]]
+* @REL.02@ will only rename the relation sides
+* @REL.05@ will take parent or child entity id from the entity mentioned in path if any one of these is missing from the provided relation resource.
+* @REL.08@ will return all the relations of an entity
+
+
+
+h2. Relations Side Types
+
+You can interact with RelationSideType resources in following ways:
+
+|_. Call ID |_. Method |_. Path                      |_. Requires |_. Returns                                                                   |
+| @RST.01@  | @GET@    | @/relation_side_types/:id@  | N/A        | [[RelationSideTypeResource|RelationSideType]]                               |
+| @RST.02@  | @GET@    | @/relation_side_types@      | N/A        | [[ResourceParcel|Parcel]] of [[RelationSideTypeResource|RelationSideType]] |
+
+*Notes*
+
+
+
+h2. Instances
+
+You can interact with the instances resources in following ways:
+
+|_. Call ID |_. Method |_. Path                               |_. Requires                    |_. Returns                                                    |
+| @INS.01@  | @POST@   | @/instances@                         | [[InstanceResource|Instance]] | Array of URL of newly created instances                      |
+| @INS.02@  | @PUT@    | @/instances/:id@                     | [[InstanceResource|Instance]] | Updated [[InstanceResource|Instance]]                        |
+| @INS.03@  | @GET@    | @/instances/:id@                     | N/A                           | [[InstanceResource|Instance]]                                |
+| @INS.04@  | @DELETE@ | @instances/:id@                      | @lock_version@                | Status code                                                  |
+| @INS.05@  | @POST@   | @/entities/:entity_id/instances@     | [[InstanceResource|Instance]] | Array of URLs of newly created instances                     |
+| @INS.06@  | @PUT@    | @/entities/:entity_id/instances/:id@ | [[InstanceResource|Instance]] | Updated [[InstanceResource|Instance]]                        |
+| @INS.07@  | @GET@    | @/entities/:entity_id/instances/:id@ | N/A                           | [[InstanceResource|Instance]]                                |
+| @INS.08@  | @GET@    | @/entities/:entity_id/instances@     | N/A                           | [[ResourceParcel|Parcel]] of [[InstanceResource|Instance]]   |
+| @INS.09@  | @DELETE@ | @/entities/:entity_id/instances/:id@ | @lock_version@                | Status code                                                  |
+
+*Notes*
+* @INS.01@ and @INS.05@ accept either a single instance or an array of instances.
+* @INS.01@ requires @entity_url@ to be mentioned in the instance resource if a single resource is being submitted or in the first resource if multiple resources are being submitted.
+
+h2. Links
+
+You can interact with the links in following ways:
+
+|_. Call ID |_. Method |_. Path                                |_. Requires              |_. Returns                                            |
+| @LNK.01@  | @POST@   | @/links@                              | [[LinkResource|Link]]   | URL of newly created link                            |
+| @LNK.02@  | @GET@    | @/links/:id@                          | N/A                     | [[LinkResource|Link]]                                |
+| @LNK.03@  | @DELETE@ | @/links/:id@                          | @lock_version@          | Status code                                          |
+| @LNK.04@  | @POST@   | @/instances/:instance_id/links@       | [[LinkResource|Link]]   | URL of newly created link                            |
+| @LNK.05@  | @GET@    | @/instances/:instance_id/links@       | N/A                     | [[ResourceParcel|Parcel]] of [[LinkResource|Link]]   |
+| @LNK.06@  | @DELETE@ | @/instances/:instance_id/links/:id@   | @lock_version@          | Status code                                          |
+
+*Notes*
+* @LNK.01@ must mention both @parent_url@ and @child_url@ of the participant [[InstanceResource|instances]] in [[LinkResource|link resource]]
+* @LNK.04@ takes @child_url@ or @parent_url@ from the path if one of them missing. If both missing, call is rejected.
+* @LNK.05@ gets all the links of an [[InstanceResource|instance]].
+* @PUT@ calls are not available for links, you need to do @DELETE@ and then @POST@ to achieve same effect.
+ 
+h2. Values
+
+You can access value resources in Dedomenon via REST API in following ways:
+
+|_. Call ID |_. Method |_. Path                                                   |_. Requires              |_. Returns                                            |
+| @VAL.01@  | @POST@   | @/instances/:instance_id/details/:detail_id/values@      | [[ValueResource|Value]] | URL of newly created Value                           |
+| @VAL.02@  | @PUT@    | @/instances/:instance_id/details/:detail_id/values/:id@  | [[ValueResource|Value]] |  Updated [[ValueResource|Value]]                     |
+| @VAL.03@  | @GET@    | @/instances/:instance_id/details/:detail_id/values@      | N/A                     | [[ResourceParcel|Parcel]] of [[ValueResource|Value]] |
+| @VAL.03@  | @GET@    | @/instances/:instance_id/details/:detail_id/values/:id@  | N/A                     | [[ValueResource|Value]]                              |
+| @VAL.04@  | @DELETE@ | @/instances/:instance_id/details/:detail_id/values/:id@  | @lock_version@          | Status code                                          |
+
+*Notes*
+* @VAL.02@ will increment the instance version also.
+* @VAL03@ and @VAL.04@ will return download URLs for attachmennt types. (Like @S3Attachment@ and @FileAttachment@)
+
+
+
