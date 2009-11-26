@@ -1,6 +1,6 @@
 ---
 layout: default
-subsections: [admin, concepts, developing, plugins]
+subsections: [admin, concepts, developing, plugins, archives]
 ---
 h1. Dedomenon
 
@@ -8,7 +8,8 @@ Dedomenon is a flexible structured online information storage system.
 
 Dedomenon is open source and released under the terms of "GNU Affero General Public License":http://www.gnu.org/licenses/agpl.html
 
-Join our "mailing list":http://lists.dedomenon.org/mailman/listinfo/discuss/ to stay up to date and discuss with other users and developers.
+This website is dedicated to developers and system administrators interested in developing on or deploying Dedomenon.
+This website has just launched with content that mich not always be up to date. Work is being done to correct this. 
 
 h2. Overview
 
@@ -19,11 +20,11 @@ h2. Overview
 
 h2. Online Demo
 
-Will be available soon
+Dedomenon is the software powering "Myowndb":http://www.myowndb.com . Head over there to try it.
 
 h2. Upcoming features
 
-* Accessible via very easy and intuitive REST API (work in progress)
+* Simple and intuitive REST API (work in progress)
 * Import and export in multiple formats (work in progress)
 * Standardization of UI on single JavaScript core
 * Develop import export from excel sheet
@@ -35,34 +36,3 @@ h2. Upcoming features
 * Add a framework for callbacks: before save, after save, before delete,
   after delete.
 
-
-
-h2. Admin Documentation
-
-* [[Installing Dedomenon]]
-* [[Dedomenon Concepts]] (useful for users and developers alike)
-
-h2. Developer Documentation
-
-h3. Developing Dedomenon
-
-* [[Database structure]]
-* [[How instances are fetched?]]
-* [[Controllers]]
-* [[Models]]
-* [[Configurations]]
-* [[Dedomenon Plugins]]
-* [[DeveloperGuideLines|Developer Guide Lines]]
-
-h3. Developing on Dedomenon
-
-* [[REST API Documentation]]
-
-h3. Extending Dedomenon
-
-* [[Writing new export plugins]]
-* [[Writing new data type]]
-* [[PluginsDirectory | Available plugins]]
-
-
-h3. [[About us]]
