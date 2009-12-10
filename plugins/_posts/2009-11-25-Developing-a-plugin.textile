@@ -1,0 +1,75 @@
+---
+layout: default
+subsections: []
+---
+
+h1. Example
+
+
+h2. Tests
+
+In your test script, you need to require the rails test_helper:
+
+  require File.dirname(__FILE__)+'/../../../../test/test_helper.rb'
+
+h2. Initialization
+
+Put your initialisation code in lib/your_plugin_name.rb and require it from init.rb in the plugin's root:
+  #init.rb
+  require 'your_plugin_name'
+
+Don't reopen classes in init.rb, as this "file is eval'd, which has some implications on the scope in which this code is run":http://guides.rubyonrails.org/plugins.html#working-with-initrb.
+
+h2. Migrations
+
+You can place your migrations under db/migrate and migrate your database with this rake tasks provided by the engines plugin:
+  rake db:migrate:plugins
+
+h2. Controllers
+
+It is advised to put your controllers in a module of the name of your plugin:
+  #app/controllers/madb_notifications/notification_subscriptions_controller
+  class MadbNotifications::NotificationSubscriptionsController < ApplicationController
+    before_filter :login_required
+	
+    def blabla
+    end
+  end
+
+If your controller only accepts authenticated requests (eg the user has to be logged in), remember to add the before_filter :login_required !
+This will give you access to current_user, which returns the logged in user.
+
+h2. Routes
+
+If you need to define routes, you can do it in the routes.rb fine in the plugin's root directory
+
+h2. Hooks in views
+
+Your plugin can add content in views.
+Put your content in your plugin's app/views/plugin_name/#{controller}/#{view}.html.rb file, eg
+  app/views/madb_notifications/entities/list.html.erb
+
+Be sure to not use the same path as the main view you're plugging in. In this case, if you put your view under app/views/entities/list.html.erb you'll get in trouble!
+
+Then, in lib/your_plugin_name.rb, add activate the hook you just created:
+
+  AppConfig.plugins.push( {:name => :madb_notifications, :entities_list_top_buttons => "madb_notifications/entities/list"  } )
+
+
+
+h3. Current hooks:
+
+* :admin_entities_view for content displayed under the fields list of an entity, but above the buttons (see /app/admin/entities/show/#{entity_id})
+* :entities_list_top_buttons for adding buttons on top of the instances list (see /app/entities/list/#{entity_id})
+
+h2. Translations and locales
+
+You can put your locales in the config/locales subdirectory of your plugin.
+Put all your translations under the namespace of your plugin. For example:
+	en:
+	  madb_notifications:
+	    entities:
+	      update_subscriptions: "Update Subscriptions"
+	      notify_me_when_entity_instance_is_created: "Notify me when entry is created"
+
+

@@ -1,0 +1,9 @@
+---
+layout: default
+---
+
+h2. Migrations
+
+A plugin may define migrations. To install these, you can simply run, from your Dedomenon's root directory:
+
+bc. rake db:migrate:plugins
