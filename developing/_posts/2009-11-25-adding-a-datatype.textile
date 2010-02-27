@@ -2,3 +2,14 @@
 layout: default
 ---
 To be added
+
+
+
+We are using YUI datatable, and so the data displayed in the table is formatted with a javascript function.
+If this function needs to have access to the detail_value_id of the detail_value, be sure to serialize the value column such as it is done for the file_attachment.
+
+
+detail instance calls yui_column (which returns the javascript code of the hash), which calls DetailValue.yui_formatter (which returns the javascript code of the formatter).
+options passed to the methods are:
+* the controller (giving access to url_for)
+

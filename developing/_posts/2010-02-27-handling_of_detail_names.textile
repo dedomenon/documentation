@@ -1,0 +1,32 @@
+---
+layout: default
+---
+h1. Handling of detail names
+
+h2. Intro
+
+Detail names can be womposed by any character, and this needed some attention in the code.
+
+h2. JSON serialization
+
+When a list is displayed, the data is requested by the CrosstabObject's find_by_sql method, each column corresponding to a detail, and as such, the column name can contain any character. The list of CrosstabObject instances is then serialized to json.
+The problem was that rail's serialization code called the accessor method for the column, which is broken for methods having special characters.
+
+The solution was to define sanitized attribute accessors in "app/models/crosstab_object.rb":http://github.com/dedomenon/dedomenon/blob/master/app/models/crosstab_object.rb#L43 , and call these in the serialization code which has been updated in "config/initializers/ar_to_json.rb":http://github.com/dedomenon/dedomenon/blob/master/config/initializers/ar_to_json.rb
+
+
+h2. YUI 2 Datasource
+
+A similar problem was encountered with YUI2's datasource. The parts of the code that had to be updated have been marked with this comment:
+bc.  datasource utf-8 fix
+
+Ths workaround is to define the fields with the hash key with which they need to be accessed:
+First define the fields:
+
+bc. fields: ["ddl","['émail']"]
+
+and then the column:
+
+bc. {key:"email",field:"['émail']",label:"Émail"}
+
+Note that this is not the cleanest code, as the JSON received by the datasource needs to have the keys "émail" and "ddl", whereas when a row is added to the datatable with addRow, the hash passed to the method needs the keys to be "['émail']" and "['ddl']".

@@ -1,0 +1,32 @@
+---
+layout: default
+---
+
+h1. Selenium Tests
+
+h2. Identifying a row
+
+The tr element in a datatable has an attribute record_id containing the instance's id.
+This is not true for rows added by a call to the datatable's method addRow().
+
+h2. Identifying a data cell
+
+We can identify the column with its class, which is of the form 
+
+yui-dt0-col-#{detail_name}
+
+The presence of a cell can be checked with an AssertElementPresent with an argument of this form:
+
+td[contains(@class,"yui-dt0-col-name")]/div[@class="yui-dt-liner" and .="Mr 64K"]
+
+h2. Identifying action columns in a datatable
+
+We can identify the column with its class,which is of the form
+  "yui-dt0-col-#{action_name}"
+
+Additionally, the instance id is put in the image's record_id attribute.
+So, to click the delete icon of the instance with id 203, you would do this:
+
+//td[contains(@class, 'yui-dt0-col-delete')]/div/img[@record_id='203']
+
+
