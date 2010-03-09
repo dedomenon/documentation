@@ -24,6 +24,8 @@ This list displays the instances that are available for linking, taking into acc
 
 * madb:entity_linked (GLOBAL event) is fired when the http request is successful, and the entity has been linked. Arguments passed are the linked list's id, and ia hash containing the record unlinked. The linked list id is similar to the linkable list id, with linkable substituted by linked, eg contact_de_la_societe_from_parent_to_child_linkable_list and contact_de_la_societe_from_parent_to_childg_linked_list. It is this event that is used to immediately add the instance to the linked list.
 
+h3. link new entity form
+
 * madb:new_entity_linked (GLOBAL event) is fired by the form adding a new linked entity. Parameters are the form id and the record to be added to the table. 
 
 
