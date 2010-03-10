@@ -24,10 +24,26 @@ This list displays the instances that are available for linking, taking into acc
 
 * madb:entity_linked (GLOBAL event) is fired when the http request is successful, and the entity has been linked. Arguments passed are the linked list's id, and ia hash containing the record unlinked. The linked list id is similar to the linkable list id, with linkable substituted by linked, eg contact_de_la_societe_from_parent_to_child_linkable_list and contact_de_la_societe_from_parent_to_childg_linked_list. It is this event that is used to immediately add the instance to the linked list.
 
+* madb_refresh_related (GLOBAL event): triggers the refresh of related lists or elements
+
 h3. link new entity form
 
 * madb:new_entity_linked (GLOBAL event) is fired by the form adding a new linked entity. Parameters are the form id and the record to be added to the table. 
+* madb_refresh_related (GLOBAL event): triggers the refresh of related lists or elements
+
+h3. Entities list
+
+* madb:table_refreshed (GLOBAL event). args: identifier of the table, and a hash containing the request and response objects
 
 
+h3. Events generators and consumers
 
-
+|_.Event|_.Generator|_.Consumers|
+|madb:entity_linked|table listing linkable instance, template in app/views/entities/link_to_existing.rhtml| to one relations in app/views/entities/view.rhtml to hide buttons to link additional instances|
+|                  |                                                                                      | relations in app/views/entities/view.rhtml to add the new linked record in the linked list|
+|madb:entity_unlinked| table listing linked instance after the unlink http request succeeded |to one relations in app/views/entities/view.rhtml to show buttons to link an instance|
+|                    |                                                               |table listing linkable instance (app/views/entities/link_to_existing.rhtml) to add the unlinked record back to the list|
+|madb:refresh_related| table listing linkable instance, template in app/views/entities/link_to_existing.rhtml. Fired when the requested linking failed. This is useful for a to one relation that had no linked instance when the page was accessed, but which had an instance linked by another user in the mean time.| corresponding table listing linked instances is refreshed|
+|                    | form adding a new linked instance in app/views/entities/link_to_new.rhtml | corresponding table listing linked instances is refreshed|
+|                    | fired by the linked instance table in app/views/entities/view.rhtml after it has been refreshed | table listing linkable instance (app/views/entities/link_to_existing.rhtml) is refreshed|
+|madb:table_refreshed| fired by all entities table, but only catched for the linked instance table in app/views/entities/view.rhtml for to one relations|hide or show buttons to link instances according to the number of records displayed in said table. Fires madb:refresh_related|
